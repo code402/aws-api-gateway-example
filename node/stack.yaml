@@ -1,11 +1,11 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Lambda to run a shouty echo service on a custom domain name.
+Description: Lambda to run a shouty echo service.
 
 Parameters:
   LambdaFunctionName:
     Type: String
     AllowedPattern: ^[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+$
-    Default: java-custom-domain-demo
+    Default: java-demo
 
   S3Bucket:
     Type: String
@@ -13,15 +13,7 @@ Parameters:
 
   S3Key:
     Type: String
-    Default: java-demo.jar
-
-  DomainName:
-    Type: String
-    Default: echo.code402.com
-
-  HostedZoneId:
-    Type: String
-    Default: Z2M7YRI8V9GBAF
+    Default: node.zip
 
 Resources:
   ApiGateway:
@@ -69,10 +61,10 @@ Resources:
       Code:
         S3Bucket: !Ref S3Bucket
         S3Key: !Ref S3Key
-      Runtime: java8
+      Runtime: nodejs10.x
       Description: Shouty echo service
       FunctionName: !Ref LambdaFunctionName
-      Handler: com.code402.App
+      Handler: index.handler
       MemorySize: 256
       Role: !GetAtt LambdaIAMRole.Arn
       Timeout: 60
@@ -116,39 +108,9 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${LambdaFunctionName}
       RetentionInDays: 14
 
-  SSLCertificate:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: !Ref DomainName
-      ValidationMethod: DNS
-
-  CustomDomainName:
-    Type: AWS::ApiGateway::DomainName
-    Properties:
-      DomainName: !Ref DomainName
-      EndpointConfiguration:
-        Types:
-          - REGIONAL
-      RegionalCertificateArn: !Ref SSLCertificate
-
-  CNAMERecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !Ref HostedZoneId
-      Name: !Ref DomainName
-      ResourceRecords:
-        - !GetAtt CustomDomainName.RegionalDomainName
-      TTL: 60
-      Type: CNAME
-
-  PathMapping:
-    Type: AWS::ApiGateway::BasePathMapping
-    DependsOn:
-      - SSLCertificate
-      - ApiGatewayDeployment
-      - CNAMERecord
-    Properties:
-      BasePath: echo
-      DomainName: !Ref DomainName
-      RestApiId: !Ref ApiGateway
-      Stage: echo
+Outputs:
+  ApiUrl:
+    Value: !Sub
+      - https://${ApiId}.execute-api.${AWS::Region}.amazonaws.com/${StageName}
+      - ApiId: !Ref ApiGateway
+        StageName: !Ref ApiStage

@@ -13,7 +13,7 @@ Parameters:
 
   S3Key:
     Type: String
-    Default: java-demo.jar
+    Default: node.zip
 
   DomainName:
     Type: String
@@ -69,10 +69,10 @@ Resources:
       Code:
         S3Bucket: !Ref S3Bucket
         S3Key: !Ref S3Key
-      Runtime: java8
+      Runtime: nodejs10.x
       Description: Shouty echo service
       FunctionName: !Ref LambdaFunctionName
-      Handler: com.code402.App
+      Handler: index.handler
       MemorySize: 256
       Role: !GetAtt LambdaIAMRole.Arn
       Timeout: 60

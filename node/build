@@ -1,0 +1,10 @@
+#!/bin/bash
+set -euo pipefail
+
+cd src
+npm install
+npm prune --production
+find -type f | zip -@ ../node.zip
+npm install
+
+echo "App packaged in node.zip"
