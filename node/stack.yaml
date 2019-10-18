@@ -5,7 +5,7 @@ Parameters:
   LambdaFunctionName:
     Type: String
     AllowedPattern: ^[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+$
-    Default: java-demo
+    Default: node-demo
 
   S3Bucket:
     Type: String
