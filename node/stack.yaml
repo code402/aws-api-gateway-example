@@ -16,11 +16,31 @@ Parameters:
     Default: node.zip
 
 Resources:
+  ApiGwAccountConfig:
+    Type: "AWS::ApiGateway::Account"
+    Properties:
+      CloudWatchRoleArn: !GetAtt "ApiGatewayLoggingRole.Arn"
+
+  ApiGatewayLoggingRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "apigateway.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+
   ApiGateway:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Name: Java Shouty Echo Demo
-      Description: Java Shouty Echo API
+      Name: Node Shouty Echo Demo
+      Description: Node Shouty Echo API
 
   ApiGatewayMethod:
     Type: AWS::ApiGateway::Method

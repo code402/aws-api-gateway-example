@@ -5,7 +5,7 @@ Parameters:
   LambdaFunctionName:
     Type: String
     AllowedPattern: ^[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+$
-    Default: java-custom-domain-demo
+    Default: node-custom-domain-demo
 
   S3Bucket:
     Type: String
@@ -27,8 +27,8 @@ Resources:
   ApiGateway:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Name: Java Shouty Echo Demo
-      Description: Java Shouty Echo API
+      Name: Node Shouty Echo Demo
+      Description: Node Shouty Echo API
 
   ApiGatewayMethod:
     Type: AWS::ApiGateway::Method
